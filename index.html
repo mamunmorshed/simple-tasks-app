@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Edit on Double Click</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="https://fonts.googleapis.com/css?family=Josefin+Sans:400,600|Playfair+Display:700" rel="stylesheet">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+	
+	<style type="text/css">
+		h2{
+			font-family: 'Playfair Display', serif;
+		}
+		p.help{
+			font-family: monospace;
+		}
+		.list-group-item{
+			font-family: 'Josefin Sans', sans-serif;
+			font-weight: 400;
+			font-size: 18px;
+			padding-bottom: 13px;
+			cursor: default;
+		}
+		.list-group-item input{
+			padding-top: 0;
+			width: 100%;
+			border-top: 0;
+			border-left: 0;
+			border-right: 0;
+		}
+		.list-group-item input:focus{
+			outline: 0;
+		}
+		.list-group-item.done{
+			text-decoration: line-through;
+		}
+		.focused{
+			padding-bottom: 10px;
+			background: rgba(0,0,0, 0.03);
+		}
+		.focused input{
+			background: transparent;
+		}
+
+		a.github-credits {
+		    position: fixed;
+		    bottom: 20px;
+		    right: 20px;
+		    font-size: 36px;
+		    color: #333;
+		    z-index: 999;
+		}
+
+		/* CONTEXT MENU STYLES */
+		#context-menu{
+			max-width: 150px;
+			position: fixed;
+			/*top: 100px;
+			left:100px;*/
+		}
+		#context-menu .list-group-item {
+		    padding-top: 3px;
+		    padding-bottom: 3px;
+		    font-family: monospace;
+		}
+
+
+	</style>
+</head>
+<body>
+<div class="container"> 
+	<div class="row"> 
+		<div class="col-md-8 col-md-offset-2 col-sm-12">
+		<h2>Brainy Quotes</h2>
+			<ul class="list-group">
+				<li class="list-group-item">We must let go of the life we have planned, so as to accept the one that is waiting for us.</li>
+				<li class="list-group-item">The best preparation for tomorrow is doing your best today.</li>
+				<li class="list-group-item">I can't change the direction of the wind, but I can adjust my sails to always reach my destination.</li>
+				<li class="list-group-item">Love the moment and the energy of that moment will spread beyond all boundaries.</li>
+				<li class="list-group-item">You must do the things you think you cannot do.</li>
+				<li class="list-group-item">Put your heart, mind, and soul into even your smallest acts. This is the secret of success.</li>
+				<li class="list-group-item">Keep your face always toward the sunshine - and shadows will fall behind you.</li>
+				<li class="list-group-item">Nothing is impossible, the word itself says 'I'm possible'!</li>
+			</ul>
+			<p class="text-muted text-center help">** Double click to edit. Press <kbd>Insert</kbd> key to add new. Right Click For More.</p>
+		</div>
+	</div>
+</div>
+
+<div id="context-menu" class="list-group invisible">
+  <a href="#" class="list-group-item" data-action="done" >Done</a>
+  <a href="#" class="list-group-item" data-action="edit" >Edit</a>
+  <a href="#" class="list-group-item" data-action="delete" >Delete</a>
+  <a href="#" class="list-group-item" data-action="new" >Add New</a>
+</div>
+
+<a href="https://github.com/mamunmorshed/edit-on-doubleclick" target="_blank" class="github-credits"><i class="fa fa-github" aria-hidden="true"></i></a>
+<script src="script.js"></script>
+<script type="text/javascript">
+var contextInitNode;
+
+doubleClickEdit('ul.list-group li.list-group-item', 'focused', cb);					// Pass the elements selector to the function.
+contextMenuInit();
+
+function cb(val){
+	console.log(val);
+}
+
+function asdf(contextInitNode) {
+	console.log('asdf: '+contextInitNode);
+}
+
+
+function contextMenuInit() {
+	var lists = document.querySelectorAll('li.list-group-item');
+	for (var i = lists.length - 1; i >= 0; i--) {
+		lists[i].addEventListener('contextmenu', createContext);
+	}
+}
+
+function createContext(e) {
+	e.preventDefault();
+	var contextMenu = document.querySelectorAll('#context-menu')[0];
+	contextMenu.classList.remove('invisible');
+	contextMenu.style.left = e.clientX+'px';
+	contextMenu.style.top = e.clientY+'px';
+	contextMenu.addEventListener('contextmenu', function(e){
+		e.preventDefault();
+	});
+	contextInitNode = this;
+	// asdf(contextInitNode);
+	contextMenuFunc();
+}
+
+
+function contextMenuFunc() {
+	var contextItems = document.querySelectorAll('#context-menu a');
+	for (var i = contextItems.length - 1; i >= 0; i--) {
+		contextItems[i].addEventListener('click', contextActions);
+	}
+	document.addEventListener('click', hideContextMenu);
+		// console.log('contextMenuFunc: '+contextInitNode);
+}
+
+function contextActions(){
+	console.log(this.dataset.action);
+	// console.log('contextActions: '+contextInitNode);
+	if (this.dataset.action == 'new') { newItem(); }
+	if (this.dataset.action == 'edit') {
+		var dblclick = new Event('dblclick');
+		contextInitNode.dispatchEvent(dblclick);
+	}
+	if (this.dataset.action == 'delete') {
+		contextInitNode.remove();
+		
+	}
+	if (this.dataset.action == 'done') {
+		contextInitNode.classList.add('done');
+	}
+
+	hideContextMenu();
+	removeContextListeners();
+}
+
+function newItem() {
+	var li = document.createElement('li');
+	li.classList.add('list-group-item');
+	li.innerHTML = "Enter your text here....";
+
+	var newEl = document.querySelectorAll('ul.list-group')[0].appendChild(li);
+	doubleClickEdit('ul.list-group li.list-group-item', 'focused', cb);	
+	contextMenuInit();
+
+	var dblclick = new Event('dblclick');
+	newEl.dispatchEvent(dblclick);
+}
+
+
+function hideContextMenu(){
+	var contextMenu = document.querySelectorAll('#context-menu')[0];
+	contextMenu.classList.add('invisible');
+	contextMenu.style.left = '-1000px';
+	contextMenu.style.top = '-1000px';	
+}
+
+function removeContextListeners(){
+	var contextItems = document.querySelectorAll('#context-menu a');
+	for (var i = contextItems.length - 1; i >= 0; i--) {
+		contextItems[i].removeEventListener('click', contextActions);
+	}
+}
+document.addEventListener('keyup', function(e){
+	if (e.keyCode==45) {
+		newItem();
+	}
+});
+
+</script>
+</body>
+</html>
