@@ -74,14 +74,14 @@
 		<div class="col-md-8 col-md-offset-2 col-sm-12">
 		<h2>Brainy Quotes</h2>
 			<ul class="list-group">
-				<li class="list-group-item">We must let go of the life we have planned, so as to accept the one that is waiting for us.</li>
+				<!-- <li class="list-group-item">We must let go of the life we have planned, so as to accept the one that is waiting for us.</li>
 				<li class="list-group-item">The best preparation for tomorrow is doing your best today.</li>
 				<li class="list-group-item">I can't change the direction of the wind, but I can adjust my sails to always reach my destination.</li>
 				<li class="list-group-item">Love the moment and the energy of that moment will spread beyond all boundaries.</li>
 				<li class="list-group-item">You must do the things you think you cannot do.</li>
 				<li class="list-group-item">Put your heart, mind, and soul into even your smallest acts. This is the secret of success.</li>
 				<li class="list-group-item">Keep your face always toward the sunshine - and shadows will fall behind you.</li>
-				<li class="list-group-item">Nothing is impossible, the word itself says 'I'm possible'!</li>
+				<li class="list-group-item">Nothing is impossible, the word itself says 'I'm possible'!</li> -->
 			</ul>
 			<p class="text-muted text-center help">** Double click to edit. Press <kbd>Insert</kbd> key to add new. Right Click For More.</p>
 		</div>
@@ -98,12 +98,54 @@
 <a href="https://github.com/mamunmorshed/simple-tasks-app" target="_blank" class="github-credits"><i class="fa fa-github" aria-hidden="true"></i></a>
 <script src="script.js"></script>
 <script type="text/javascript">
-var contextInitNode;
 
+var listOne = [
+	"We must let go of the life we have planned, so as to accept the one that is waiting for us.",
+	"The best preparation for tomorrow is doing your best today.",
+	"I can't change the direction of the wind, but I can adjust my sails to always reach my destination.",
+	"Love the moment and the energy of that moment will spread beyond all boundaries.",
+	"You must do the things you think you cannot do.",
+	"Put your heart, mind, and soul into even your smallest acts. This is the secret of success.",
+	"Keep your face always toward the sunshine - and shadows will fall behind you.",
+	"Nothing is impossible, the word itself says 'I'm possible'!"
+];
+
+
+pushToDB("We accept the love we think we deserve", "listOne");
+updateItem(2, "", "listOne");
+listOne = listOne.filter(function(n){if (n) {return n;}});
+deleteItem(7, "listOne");
+
+function pushToDB(item, itemArray){
+	this[itemArray].push(item);
+	return Math.max(...[...this[itemArray].keys()]);
+}
+
+function updateItem(i, item, itemArray){
+	this[itemArray][i] = item;
+}
+
+function deleteItem(i, itemArray){
+	delete this[itemArray][i];
+}
+
+
+var ul = document.querySelectorAll('ul.list-group')[0];
+for (var i = 0; i < listOne.length; i++) {
+	if(!listOne[i]) continue;
+	var li = document.createElement('li');
+	li.classList.add('list-group-item');
+	li.dataset.list = "listOne"; 
+	li.dataset.index = i;
+	li.innerHTML = listOne[i];
+	ul.appendChild(li);
+}
+
+
+// var contextInitNode;
 doubleClickEdit('ul.list-group li.list-group-item', 'focused', cb);					// Pass the elements selector to the function.
 contextMenuInit();
 insertWatcher();
-
 
 </script>
 </body>

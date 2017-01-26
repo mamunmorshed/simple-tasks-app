@@ -68,7 +68,6 @@ function createContext(e) {
 		e.preventDefault();
 	});
 	contextInitNode = this;
-	// asdf(contextInitNode);
 	contextMenuFunc();
 }
 
@@ -79,12 +78,10 @@ function contextMenuFunc() {
 		contextItems[i].addEventListener('click', contextActions);
 	}
 	document.addEventListener('click', hideContextMenu);
-		// console.log('contextMenuFunc: '+contextInitNode);
 }
 
 function contextActions(){
 	console.log(this.dataset.action);
-	// console.log('contextActions: '+contextInitNode);
 	if (this.dataset.action == 'new') { newItem(); }
 	if (this.dataset.action == 'edit') {
 		var dblclick = new Event('dblclick');
@@ -100,6 +97,7 @@ function contextActions(){
 
 	hideContextMenu();
 	removeContextListeners();
+	delete contextInitNode;
 }
 
 function newItem() {
