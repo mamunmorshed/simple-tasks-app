@@ -44,6 +44,7 @@ function doubleClickEdit(el, focusClass = '', cb){
 
 function cb(val){
 	console.log(val);
+	pushToDB(val);
 }
 
 function asdf(contextInitNode) {
