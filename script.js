@@ -1,4 +1,4 @@
-function doubleClickEdit(el, focusClass = '', cb){
+function doubleClickEdit(el, focusClass = '' , cb){
 	var listItems = document.querySelectorAll(el);						//#1 Selects all the items
 	for (var i =  listItems.length - 1; i >= 0; i--) {					//#2 Iterate through each items
 		 listItems[i].addEventListener("dblclick", function(e){			//#3 Add function on Double Click event over all the items
@@ -44,13 +44,17 @@ function doubleClickEdit(el, focusClass = '', cb){
 
 function cb(val){
 	console.log(val);
-	pushToDB(val);
+	// pushToDB(val);
 }
 
 function asdf(contextInitNode) {
 	console.log('asdf: '+contextInitNode);
 }
 
+function addIndexNumber(num){
+    var itemsNow = document.querySelectorAll('ul.list-group li.list-group-item');
+    itemsNow[itemsNow.length-1].dataset.index = num;
+}
 
 function contextMenuInit() {
 	var lists = document.querySelectorAll('li.list-group-item');
@@ -89,6 +93,7 @@ function contextActions(){
 		contextInitNode.dispatchEvent(dblclick);
 	}
 	if (this.dataset.action == 'delete') {
+		console.log(contextInitNode);
 		contextInitNode.remove();
 		
 	}
@@ -107,7 +112,7 @@ function newItem() {
 	li.innerHTML = "Enter your text here....";
 
 	var newEl = document.querySelectorAll('ul.list-group')[0].appendChild(li);
-	doubleClickEdit('ul.list-group li.list-group-item', 'focused', cb);	
+	doubleClickEdit('ul.list-group li.list-group-item', 'focused', pushToDB);
 	contextMenuInit();
 
 	var dblclick = new Event('dblclick');
@@ -130,6 +135,16 @@ function removeContextListeners(){
 }
 
 function insertWatcher() {
+    var activeItem = document.getElementsByTagName('input')[0];
+    if (activeItem){
+        var blur = new Event('blur');
+        activeItem.dispatchEvent(blur);
+    }
+    var activeForm = document.getElementsByTagName('form')[0];
+    if (activeForm){
+        var submit = new Event('submit');
+        activeItem.dispatchEvent(submit);
+    }
 	document.addEventListener('keyup', function(e){
 		if (e.keyCode==45) {
 			newItem();

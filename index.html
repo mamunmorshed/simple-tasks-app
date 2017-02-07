@@ -139,7 +139,7 @@ function syncDB(){
 function pushToDB(item, itemArray = "mmTasksList"){
 	this[itemArray].push(item);
 	syncDB();
-	return Math.max(...[...this[itemArray].keys()]);
+    addIndexNumber(Math.max(...[...this[itemArray].keys()]));
 }
 
 function updateItem(i, item, itemArray){
